@@ -1,41 +1,34 @@
 version: '3.8'
 
 services:
-  # Capa de Datos: MySQL
   db:
     image: mysql:8.0
-    container_name: tienda-db
+    container_name: db-innovatech
     restart: always
     environment:
+      # Verifica que estos coincidan con tu application.properties del Back
       MYSQL_ROOT_PASSWORD: admin123
-      MYSQL_DATABASE: tienda_perritos
+      MYSQL_DATABASE: bd_innovatech 
     ports:
       - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql # REQUISITO: Persistencia de datos
+      - data_innovatech:/var/lib/mysql
 
-  # Capa de Lógica: Backend Ventas
   backend-ventas:
-    build: ./back-Ventas_SpringBoot/Springboot-API-REST
+    image: [TU_ID_AWS].dkr.ecr.us-east-1.amazonaws.com/back-ventas:latest
     container_name: back-ventas
     ports:
       - "8080:8080"
-    environment:
-      - DB_HOST=db # Uso de DNS interno de Docker
-      - DB_USER=root
-      - DB_PASSWORD=admin123
     depends_on:
       - db
 
-  # Capa de Presentación: Frontend
   frontend:
-    build: ./front_despacho
+    image: [TU_ID_AWS].dkr.ecr.us-east-1.amazonaws.com/front-tienda:latest
     container_name: front-tienda
     ports:
       - "80:80"
     depends_on:
       - backend-ventas
 
-# Definición del volumen para la persistencia (IE9)
 volumes:
-  db_data:
+  data_innovatech: # Nombre de volumen profesional
