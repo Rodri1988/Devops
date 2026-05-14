@@ -5,10 +5,12 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# ETAPA 2: Ejecución con JAVA
-FROM openjdk:17-jdk-slim
-RUN addgroup --system spring && adduser --system spring --ingroup spring
+# ETAPA 2: Ejecución con JAVA (Imagen actualizada y disponible)
+FROM eclipse-temurin:17-jre-alpine
+# SEGURIDAD: Usuario no root
+RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
+
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
